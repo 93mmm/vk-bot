@@ -6,7 +6,7 @@
     "voice-messages": [
         "audiofile.ogg"
     ],
-    "mesages": [
+    "messages": [
         {
             "message": "test-message",
             "photos": ["frame.png"]
