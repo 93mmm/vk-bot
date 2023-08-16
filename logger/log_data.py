@@ -1,4 +1,4 @@
-from custom_logs.filenames import *
+from logger.filenames import *
 
 class LogsWriter:
     def __init__(self):

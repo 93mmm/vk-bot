@@ -1,8 +1,8 @@
 from tests.check_files import *
-import custom_logs
+import logger
 
 def renew_logs_files():
-    files = custom_logs.LogsWriter()
+    files = logger.LogsWriter()
     files.renew_files()
 
 

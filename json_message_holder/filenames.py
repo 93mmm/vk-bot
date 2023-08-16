@@ -1,2 +1,2 @@
-MESSAGES = "json/messages.json"
-CONFIG = "json/config.json"
+MESSAGES = "files/json/messages.json"
+CONFIG = "files/json/config.json"
