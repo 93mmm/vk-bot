@@ -1,5 +1,0 @@
-Received message: LL
-From user: 10 (DD)
-In conversation: 11 (LL)
-At this time: 2023-08-16 11:41:11.006752
-

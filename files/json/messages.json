@@ -4,12 +4,18 @@
         17953
     ],
     "voice-messages": [
-        "audiofile.ogg"
+        "empty0.ogg",
+        "empty1.ogg"
     ],
     "messages": [
         {
             "message": "test-message",
-            "photos": ["frame.png"]
+            "photos": ["frame.png"],
+            "files": ["example.txt"]
+        },
+        {
+            "message": "test-message2",
+            "photos": ["frame2.png"]
         }
     ]
 }

@@ -1,5 +1,4 @@
 {
     "token": "your-token",
-    "conference-ids-to-monitor": [ ],
-    "launch-mode": ""
+    "conference-ids-to-monitor": [ ]
 }

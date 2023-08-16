@@ -1,3 +1,3 @@
-from structs.exception_data import ExceptionData
-from structs.received_message import ReceivedMessage
-from structs.sent_message import SentMessage
+from structs.event_structs import *
+from structs.new_message import *
+from structs.attachments import *

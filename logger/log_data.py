@@ -1,5 +1,6 @@
 from logger.filenames import *
 
+
 class LogsWriter:
     def __init__(self):
         self.error_f = open(ERRORS, "a")
@@ -16,6 +17,7 @@ class LogsWriter:
 
     def log_received(self, strct):
         self.received_msg_f.write(str(strct))
+        print("logged message")
 
     def log_sent(self, strct):
         self.sent_msg_f.write(str(strct))

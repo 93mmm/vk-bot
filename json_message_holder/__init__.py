@@ -1,1 +1,0 @@
-from json_message_holder.holder import JsonMessagesHolder
