@@ -1,1 +1,1 @@
-from logger.log_data import LogsWriter
+from .log_data import LogsWriter

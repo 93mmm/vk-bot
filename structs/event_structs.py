@@ -7,11 +7,13 @@ class ExceptionData:
     def __init__(self, ex, **variables):
         self.ex = ex
         self.variables = variables
+        self.time = datetime.now()
 
     def __str__(self):
         message = f"Thrown exception: {repr(self.ex)}\nVariables:\n"
         for key, value in self.variables.items():
             message += f"{key} = {value}\n"
+        message += f"\nAt the time: {self.time}\n\n"
         return message + "\n"
 
 
@@ -30,7 +32,7 @@ class ReceivedMessage:
         output.append(f"Received message: {self.text}")
         output.append(f"From user: {self.id_from} ({self.name_from})")
         output.append(f"In conversation: {self.id_conversation} ({self.name_conversation})")
-        output.append(f"At this time: {self.time}\n\n")
+        output.append(f"At the time: {self.time}\n\n")
 
         return "\n".join(output)
 
@@ -47,6 +49,6 @@ class SentMessage:
         output = list()
         output.append(f"Sent message: {self.text}")
         output.append(f"In conversation: {self.id_conversation} ({self.name_conversation})")
-        output.append(f"At this time: {self.time}\n\n")
+        output.append(f"At the time: {self.time}\n\n")
 
         return "\n".join(output)

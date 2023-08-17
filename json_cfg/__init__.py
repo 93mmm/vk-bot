@@ -1,1 +1,1 @@
-from json_cfg.holder import *
+from .holder import *

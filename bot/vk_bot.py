@@ -33,17 +33,14 @@ class Bot:
             try:
                 for event in self.longpoll.listen():
                     if event.type == VkEventType.MESSAGE_NEW:
-                        received_message = structs.ReceivedMessage(event.text,
-                                                                   event.user_id,
-                                                                   self.get_sender_name(event.user_id),
-                                                                   event.peer_id,
-                                                                   self.get_conversation_name(event))
-                        self.log.log_received(received_message)
+                        self.log_received_message(event)
+            except KeyboardInterrupt:
+                print("\nKeyboard interrupt received, exiting.")
+                exit()
             except Exception as ex:
-                self.log.log_exception(ex)
+                self.log.log_exception(structs.ExceptionData(ex))
                 print("Exception occurred")
                 sleep(2)
-
 
     def log_received_message(self, event: Event):
         received_message = structs.ReceivedMessage(event.text,

@@ -1,3 +1,3 @@
-from structs.event_structs import *
-from structs.new_message import *
-from structs.attachments import *
+from .event_structs import *
+from .new_message import *
+from .attachments import *

@@ -1,1 +1,1 @@
-from bot.vk_bot import Bot
+from .vk_bot import Bot
