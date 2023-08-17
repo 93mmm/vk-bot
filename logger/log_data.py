@@ -19,13 +19,13 @@ class LogsWriter:
             file.write(str(strct))
 
     def renew_files(self):
-        with open(EXCEPTIONS, "w") as file:
-            file.write("")
+        with open(EXCEPTIONS, "w"):
+            pass
 
-        with open(RECEIVED_MESSAGES, "w") as file:
-            file.write("")
+        with open(RECEIVED_MESSAGES, "w"):
+            pass
 
-        with open(SENT_MESSAGES, "w") as file:
-            file.write("")
+        with open(SENT_MESSAGES, "w"):
+            pass
 
         print("files cleared")

@@ -7,6 +7,7 @@ from vk_api.exceptions import ApiError
 from vk_api.longpoll import VkLongPoll, VkEventType, Event
 from time import sleep
 from sys import exit
+from requests import ConnectionError
 
 
 class Bot:
@@ -27,12 +28,21 @@ class Bot:
             red_end = "\033[0m"
             print(f"{red}Check your token{red_end}")
             exit()
+        except ConnectionError:
+            red = "\033[1;31;40m"
+            red_end = "\033[0m"
+            print(f"{red}Check your internet connection{red_end}")
+            exit()
 
     def main(self):
         while True:
             try:
                 for event in self.longpoll.listen():
                     if event.type == VkEventType.MESSAGE_NEW:
+                        try:
+                            print(event.attachments["attachments"])
+                        except Exception as ex:
+                            print(repr(ex))
                         self.log_received_message(event)
             except KeyboardInterrupt:
                 print("\nKeyboard interrupt received, exiting.")
@@ -56,7 +66,8 @@ class Bot:
         return user
 
     def get_conversation_name(self, event: Event):
-        conv_name = self.api.messages.getConversationsById(peer_ids=event.peer_id, extended=1,
+        conv_name = self.api.messages.getConversationsById(peer_ids=event.peer_id,
+                                                           extended=1,
                                                            fields="chat_settings")
         if event.from_user:
             return f"{conv_name['profiles'][0]['first_name']} {conv_name['profiles'][0]['last_name']}"
