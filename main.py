@@ -10,4 +10,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    # TODO: argparse run props
+    # TODO: paste argparse run props into launch config

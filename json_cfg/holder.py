@@ -26,11 +26,9 @@ class JsonMessagesHolder:
         return choice(self.messages["messages"])
 
     def append_sticker(self, sticker_id: int):
-        with open(MESSAGES, "r+") as file:
-            data = json.load(file)
-            data["stickers"].append(sticker_id)
-            file.write(json.dumps(data, indent=4))
-    # TODO: append, formatted save
+        with open(MESSAGES, "w") as file:
+            self.messages["stickers"].append(sticker_id)
+            file.write(json.dumps(self.messages, indent=4))
 
     def append_voice_message(self, file: str):
         pass

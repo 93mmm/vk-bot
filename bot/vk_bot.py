@@ -12,6 +12,8 @@ from requests import ConnectionError
 
 class Bot:
     def __init__(self):
+        # TODO: program launch config (struct)
+
         self.log = logger.LogsWriter()
         self.json_messages = json_cfg.JsonMessagesHolder()
         self.config = json_cfg.RunConfig()
@@ -23,15 +25,10 @@ class Bot:
             self.longpoll = VkLongPoll(self.vk)
             print("success")
         except ApiError:
-            # TODO: warnings.warn
-            red = "\033[1;31;40m"
-            red_end = "\033[0m"
-            print(f"{red}Check your token{red_end}")
+            print("Check your token")
             exit()
         except ConnectionError:
-            red = "\033[1;31;40m"
-            red_end = "\033[0m"
-            print(f"{red}Check your internet connection{red_end}")
+            print("Check your internet connection")
             exit()
 
     def main(self):
@@ -39,14 +36,14 @@ class Bot:
             try:
                 for event in self.longpoll.listen():
                     if event.type == VkEventType.MESSAGE_NEW:
-                        try:
-                            print(event.attachments["attachments"])
-                        except Exception as ex:
-                            print(repr(ex))
                         self.log_received_message(event)
+                        self.check_sticker(event.attachments)
             except KeyboardInterrupt:
                 print("\nKeyboard interrupt received, exiting.")
                 exit()
+            except ConnectionError as ex:
+                self.log.log_exception(structs.ExceptionData(ex))
+                sleep(2)
             except Exception as ex:
                 self.log.log_exception(structs.ExceptionData(ex))
                 print("Exception occurred")
@@ -72,3 +69,7 @@ class Bot:
         if event.from_user:
             return f"{conv_name['profiles'][0]['first_name']} {conv_name['profiles'][0]['last_name']}"
         return conv_name["items"][0]["chat_settings"]["title"]
+
+    def check_sticker(self, atts):
+        if "attach1_type" in atts and atts["attach1_type"] == "sticker":
+            self.json_messages.append_sticker(int(atts["attach1"]))

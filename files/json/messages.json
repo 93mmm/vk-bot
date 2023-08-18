@@ -1,7 +1,5 @@
 {
     "stickers": [
-        17952,
-        17953
     ],
     "voice-messages": [
         "empty0.ogg",
@@ -10,12 +8,18 @@
     "messages": [
         {
             "message": "test-message",
-            "photos": ["frame.png"],
-            "files": ["example.txt"]
+            "photos": [
+                "frame.png"
+            ],
+            "files": [
+                "example.txt"
+            ]
         },
         {
             "message": "test-message2",
-            "photos": ["frame2.png"]
+            "photos": [
+                "frame2.png"
+            ]
         }
     ]
 }
