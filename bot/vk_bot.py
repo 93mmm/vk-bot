@@ -1,6 +1,7 @@
 import logger
 import json_cfg
 import structs
+import tests
 
 from vk_api import VkApi
 from vk_api.exceptions import ApiError
@@ -16,7 +17,11 @@ class Bot:
 
         self.log = logger.LogsWriter()
         self.json_messages = json_cfg.JsonMessagesHolder()
-        self.config = json_cfg.RunConfig()
+        self.config = structs.LaunchConfig()
+        print(str(self.config))
+        self.config.check_config()
+
+        tests.test()
 
         try:
             print("connecting...")
@@ -37,7 +42,14 @@ class Bot:
                 for event in self.longpoll.listen():
                     if event.type == VkEventType.MESSAGE_NEW:
                         self.log_received_message(event)
-                        self.check_sticker(event.attachments)
+                        if self.config.collect_stickers:
+                            self.check_sticker(event.attachments)
+                        if self.config.collect_messages:
+                            pass  # TODO: collect messages
+                        if self.config.collect_voices:
+                            pass  # TODO: collect voices
+                        if self.config.send_spam:
+                            pass  # TODO: send spam
             except KeyboardInterrupt:
                 print("\nKeyboard interrupt received, exiting.")
                 exit()

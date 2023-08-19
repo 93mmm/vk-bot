@@ -1,6 +1,7 @@
 import json
 from random import choice
-from json_cfg.filenames import *
+
+MESSAGES = "files/json/messages.json"
 
 
 class JsonMessagesHolder:
@@ -10,34 +11,38 @@ class JsonMessagesHolder:
             self.messages = json.load(file)
 
     def generate_random_message(self):
-        todo = choice([self.get_random_sticker,
-                       self.get_random_sticker,
-                       self.get_random_message,
-                       self.get_random_message])
+        def get_random_sticker():
+            return choice(self.messages["stickers"])
+
+        def get_random_voice():
+            return choice(self.messages["voice-messages"])
+
+        def get_random_message():
+            return choice(self.messages["messages"])
+
+        todo = choice([get_random_sticker,
+                       get_random_voice,
+                       get_random_message,
+                       get_random_message])
         return todo()
 
-    def get_random_sticker(self):
-        return choice(self.messages["stickers"])
-
-    def get_random_voice(self):
-        return choice(self.messages["voice-messages"])
-
-    def get_random_message(self):
-        return choice(self.messages["messages"])
-
     def append_sticker(self, sticker_id: int):
-        with open(MESSAGES, "w") as file:
-            self.messages["stickers"].append(sticker_id)
-            file.write(json.dumps(self.messages, indent=4))
+        self.messages["stickers"].append(sticker_id)
+        self.write_changes()
 
     def append_voice_message(self, file: str):
-        pass
-    # TODO: append, formatted save
+        self.messages["voice-messages"].append(file)
+        self.write_changes()
 
+    def append_message(self):
+        # TODO: edit
+        obj_to_paste = dict()
+        obj_to_paste["message"] = str()
+        obj_to_paste["photos"] = list()
+        obj_to_paste["files"] = list()
+        self.messages["messages"].append(obj_to_paste)
+        self.write_changes()
 
-class RunConfig:
-    def __init__(self):
-        with open(CONFIG) as file:
-            info = json.load(file)
-        self.token = info["token"]
-        self.conference_ids_to_monitor = info["conference-ids-to-monitor"]
+    def write_changes(self):
+        with open(MESSAGES, "w") as file:
+            file.write(json.dumps(self.messages, indent=4))

@@ -9,16 +9,11 @@
         {
             "message": "test-message",
             "photos": [
-                "frame.png"
+                "frame.png",
+                "frame2.png"
             ],
             "files": [
                 "example.txt"
-            ]
-        },
-        {
-            "message": "test-message2",
-            "photos": [
-                "frame2.png"
             ]
         }
     ]
