@@ -41,8 +41,8 @@ Fill in ```config.json``` according to where you want to receive and save certai
 Fill in the ```send-spam-to``` field in the form of ”key: value", where the key is the conversation ID, the value is the number of messages between the bot messages:
 ```json
     "send-spam-to": {
-        20004: 20,
-        20005: 32
+        "20004": "20",
+        "20005": "32"
     },
 ```
 
