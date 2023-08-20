@@ -74,14 +74,22 @@ class LaunchConfig:
     def __str__(self):
         config = list()
         config.append("Selected config:")
-        config.append(f"-send-spam: {self.send_spam}")
-        config.append(f"-collect-stickers: {self.collect_stickers}")
-        config.append(f"-collect-voices: {self.collect_voices}")
-        config.append(f"-collect-messages: {self.collect_messages}")
-        config.append(f"-receive-only-ids: {self.receive_only_ids}")
-        config.append(f"-remove-subscriptions: {self.remove_subscriptions}")
-        config.append(f"-remove-friends: {self.remove_friends}")
-        config.append(f"-remove-videos: {self.remove_videos}")
+        if self.send_spam:
+            config.append("-send-spam")
+        if self.collect_stickers:
+            config.append("-collect-stickers")
+        if self.collect_voices:
+            config.append("-collect-voices")
+        if self.collect_messages:
+            config.append("-collect-messages")
+        if self.receive_only_ids:
+            config.append("-receive-spam")
+        if self.remove_subscriptions:
+            config.append("-remove-subscriptions")
+        if self.remove_friends:
+            config.append("-remove-friends")
+        if self.remove_videos:
+            config.append("-remove-videos")
         return "\n\t".join(config)
 
     def check_config(self):

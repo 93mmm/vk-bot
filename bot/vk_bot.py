@@ -64,12 +64,14 @@ class Bot:
     def log_received_message(self, event: Event):
         received_message = structs.ReceivedMessage(event.text,
                                                    event.user_id,
-                                                   self.get_sender_name(event.user_id),
+                                                   self.get_sender_name(event.user_id, event.from_user),
                                                    event.peer_id,
                                                    self.get_conversation_name(event.peer_id))
         self.log.log_received(received_message)
 
-    def get_sender_name(self, user_id: int):
+    def get_sender_name(self, user_id: int, from_user: bool):
+        if from_user:
+            return "Bot's account"
         user = self.api.users.get(user_ids=str(user_id))[0]
         user = f"{user['first_name']} {user['last_name']}"
         return user
@@ -79,15 +81,11 @@ class Bot:
                                                           extended=1,
                                                           fields="chat_settings")
         peer = response["items"][0]["peer"]
-
         if peer["type"] == "chat":
             return response["items"][0]["chat_settings"]["title"]
         elif peer["type"] == "user":
             profiles = response["profiles"]
-            idx = 0
-            if profiles[1]["id"] == peer_id:
-                idx = 1
-            f"{profiles[idx]['first_name']} {profiles[idx]['last_name']}"
+            return f"{profiles[0]['first_name']} {profiles[0]['last_name']}"
 
     def check_sticker(self, atts):
         if "attach1_type" in atts and atts["attach1_type"] == "sticker":
