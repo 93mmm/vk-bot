@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import json
 import argparse
+from sys import exit
 
 CONFIG = "files/json/config.json"
 
@@ -11,15 +12,17 @@ class LaunchConfig:
         with open(CONFIG) as file:
             info = json.load(file)
         self.token = info["token"]
-        self.conference_ids_to_monitor = info["conference-ids-to-monitor"]
+        self.send_spam_to = info["send-spam-to"]
 
         self.args = self.get_props()
         self.send_spam = self.args.send_spam
         self.collect_stickers = self.args.collect_stickers
         self.collect_voices = self.args.collect_voices
         self.collect_messages = self.args.collect_messages
+        self.receive_only_ids = self.args.receive_only_ids
         self.remove_subscriptions = self.args.remove_subscriptions
         self.remove_friends = self.args.remove_friends
+        self.remove_videos = self.args.remove_videos
 
     def get_props(self):
         parser = argparse.ArgumentParser(
@@ -37,17 +40,17 @@ class LaunchConfig:
         vk_bot_tools.add_argument("-collect-stickers",
                                   action="store_true",
                                   help="receive and record incoming stickers (you can configure a list of group IDs "
-                                       "(in the config.json file) from which messages need to be recorded")
+                                       f"(in the {CONFIG} file) from which messages need to be recorded")
 
         vk_bot_tools.add_argument("-collect-voices",
                                   action="store_true",
                                   help="receive and record incoming voices (you can configure a list of group IDs "
-                                       "(in the config.json file) from which messages need to be recorded")
+                                       f"(in the {CONFIG} file) from which messages need to be recorded")
 
         vk_bot_tools.add_argument("-collect-messages",
                                   action="store_true",
                                   help="receive and record incoming messages (you can configure a list of group IDs "
-                                       "(in the config.json file) from which messages need to be recorded)")
+                                       f"(in the {CONFIG} file) from which messages need to be recorded)")
 
         vk_page_tools.add_argument("-receive-only-ids",
                                    action="store_true",
@@ -75,10 +78,16 @@ class LaunchConfig:
         config.append(f"-collect-stickers: {self.collect_stickers}")
         config.append(f"-collect-voices: {self.collect_voices}")
         config.append(f"-collect-messages: {self.collect_messages}")
-        config.append(f"-remove-all-subscriptions: {self.remove_subscriptions}")
-        config.append(f"-remove-all-friends: {self.remove_friends}")
+        config.append(f"-receive-only-ids: {self.receive_only_ids}")
+        config.append(f"-remove-subscriptions: {self.remove_subscriptions}")
+        config.append(f"-remove-friends: {self.remove_friends}")
+        config.append(f"-remove-videos: {self.remove_videos}")
         return "\n\t".join(config)
 
     def check_config(self):
-        pass
-        # TODO: check flag's compatibility
+        print(str(self))
+        bot_tools = [self.send_spam, self.collect_stickers, self.collect_voices, self.collect_messages]
+        page_tools = [self.receive_only_ids, self.remove_subscriptions, self.remove_friends, self.remove_videos]
+        if any(bot_tools) and any(page_tools):
+            print("Selected incompatible options, please read docs and re-select options")
+            exit()

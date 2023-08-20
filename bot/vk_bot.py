@@ -18,7 +18,6 @@ class Bot:
         self.log = logger.LogsWriter()
         self.json_messages = json_cfg.JsonMessagesHolder()
         self.config = structs.LaunchConfig()
-        print(str(self.config))
         self.config.check_config()
 
         tests.test()

@@ -1,4 +1,7 @@
 {
     "token": "your-token",
-    "conference-ids-to-monitor": [ ]
+    "send-spam-to": {},
+    "collect-stickers-from": [],
+    "collect-voices-from": [],
+    "collect-messages-from": []
 }
