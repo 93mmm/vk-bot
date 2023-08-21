@@ -1,41 +1,20 @@
-from dataclasses import dataclass
-import vk_api
+from random import randint
 
 
-@dataclass
 class TextMessage:
-    def __init__(self, conversation_id: int, text: str, attachments: list):
-        self.conversation_id = conversation_id
+    def __init__(self, vk, peer_id, *attachments, text="", sticker_id=0):
+        self.vk = vk
+        self.api = vk.get_api()
+
+        self.peer_id = peer_id
         self.text = text
-        self.attachments = attachments
-
-    def send(self, api: vk_api.VkApi):
-        pass
-        # TODO: send constructed message
-
-    def append_attachment(self, att):
-        self.attachments.append(att)
-
-    def join_attachments(self):
-        pass
-        # TODO: join all attachments into string
-
-
-@dataclass
-class Sticker:
-    def __init__(self, conversation_id: int, sticker_id: int):
-        self.conversation_id = conversation_id
         self.sticker_id = sticker_id
-
-    def send(self, vk):
-        pass
-        # TODO: send sticker
-
-
-@dataclass
-class Voice:
-    def __init__(self, conversation_id: int, path: str):
-        pass
-
+        self.attachments = attachments
+    
     def send(self):
-        pass
+        self.api.messages.send(peer_id=self.peer_id, 
+                               random_id=randint(0, 100000),
+                               message=self.text, 
+                               attachment=",".join(list(map(str, self.attachments))),
+                               sticker_id=self.sticker_id)
+

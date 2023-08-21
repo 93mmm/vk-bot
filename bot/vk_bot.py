@@ -87,7 +87,6 @@ class Bot:
             return f"{profiles[0]['first_name']} {profiles[0]['last_name']}"
 
     def check_sticker(self, peer_id, atts):
-
         if "attach1_type" in atts and atts["attach1_type"] == "sticker" and peer_id in self.config.collect_stickers_from:
             self.json_messages.append_sticker(int(atts["attach1"]))
 
