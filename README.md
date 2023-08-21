@@ -19,7 +19,7 @@ pip3 install -r requirements.1. txt
 > [!IMPORTANT]
 > Configure environment
 
-1. Configure [```config.json```](https://github.com/93mmm/vk-pseudo-spam-bot/tree/dev/files/json) file to start script
+1. Configure [```config.json```](https://github.com/93mmm/vk-pseudo-spam-bot/tree/master/files/json) file to start script
 
 2. Type ```python3 main.py {flags}``` to run script
 
