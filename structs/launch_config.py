@@ -11,21 +11,24 @@ class LaunchConfig:
     def __init__(self):
         with open(CONFIG) as file:
             info = json.load(file)
+        
         self.token = info["token"]
-        self.send_spam_to = info["send-spam-to"]
+        self.delay, self.current_received = self.configure(info["send-spam-to"])
+
         self.collect_stickers_from = set(info["collect-stickers-from"])
         self.collect_voices_from = set(info["collect-voices-from"])
         self.collect_messages_from = set(info["collect-messages-from"])
 
-        self.args = self.get_props()
-        self.send_spam = self.args.send_spam
-        self.collect_stickers = self.args.collect_stickers
-        self.collect_voices = self.args.collect_voices
-        self.collect_messages = self.args.collect_messages
-        self.configure_ids = self.args.configure_ids
-        self.remove_subscriptions = self.args.remove_subscriptions
-        self.remove_friends = self.args.remove_friends
-        self.remove_videos = self.args.remove_videos
+        args = self.get_props()
+        self.send_spam = args.send_spam
+        self.collect_stickers = args.collect_stickers
+        self.collect_voices = args.collect_voices
+        self.collect_messages = args.collect_messages
+        self.configure_ids = args.configure_ids
+        self.remove_subscriptions = args.remove_subscriptions
+        self.remove_friends = args.remove_friends
+        self.remove_videos = args.remove_videos
+        #  TODO: add flag -load-docs to README.md
 
     def get_props(self):
         parser = argparse.ArgumentParser(
@@ -71,6 +74,7 @@ class LaunchConfig:
                                    action="store_true",
                                    help="remove all added videos from your account")
 
+        #  TODO: add flag -load-docs
         return parser.parse_args()
 
     def __str__(self):
@@ -95,6 +99,7 @@ class LaunchConfig:
         if len(config) == 1:
             config.append("You have not selected the bot launch options, the bot will simply receive and log messages.")
         return "\n\t".join(config)
+        #  TODO: add flag -load-docs
 
     def check_config(self):
         print(str(self))
@@ -103,3 +108,8 @@ class LaunchConfig:
         if any(bot_tools) and any(page_tools):
             print("Selected incompatible options, please read docs and re-select options")
             exit()
+    
+    def configure(self, from_what):
+        delay, current_received = dict(), dict()
+        # TODO: configure list with type {"id": messages_delay}
+        return delay, current_received
