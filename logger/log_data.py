@@ -8,7 +8,7 @@ class LogsWriter:
     def log_exception(self, strct):
         with open(EXCEPTIONS, "a") as file:
             file.write(str(strct))
-        # TODO: warning: exc occurred
+        print("Exception occurred")
 
     def log_received(self, strct):
         with open(RECEIVED_MESSAGES, "a") as file:
@@ -27,5 +27,3 @@ class LogsWriter:
 
         with open(SENT_MESSAGES, "w"):
             pass
-
-        print("files cleared")

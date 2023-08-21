@@ -92,6 +92,8 @@ class LaunchConfig:
             config.append("-remove-friends")
         if self.remove_videos:
             config.append("-remove-videos")
+        if len(config) == 1:
+            config.append("You have not selected the bot launch options, the bot will simply receive and log messages.")
         return "\n\t".join(config)
 
     def check_config(self):

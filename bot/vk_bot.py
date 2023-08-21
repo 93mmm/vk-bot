@@ -21,11 +21,10 @@ class Bot:
         tests.test()
 
         try:
-            print("connecting...")
             self.vk = VkApi(token=self.config.token)
             self.api = self.vk.get_api()
             self.longpoll = VkLongPoll(self.vk)
-            print("success")
+            print("Connected to VK server")
         except ApiError:
             print("Check your token")
             exit()
@@ -57,7 +56,6 @@ class Bot:
                 sleep(2)
             except Exception as ex:
                 self.log.log_exception(structs.ExceptionData(ex))
-                print("Exception occurred")
                 sleep(2)
 
     def log_received_message(self, event: Event):
@@ -69,6 +67,7 @@ class Bot:
         self.log.log_received(received_message)
 
     def get_sender_name(self, user_id: int, from_user: bool):
+        # TODO: check if message from community
         if from_user:
             return "Bot's account"
         user = self.api.users.get(user_ids=str(user_id))[0]
@@ -76,6 +75,7 @@ class Bot:
         return user
 
     def get_conversation_name(self, peer_id: int):
+        # TODO: check if message from community
         response = self.api.messages.getConversationsById(peer_ids=peer_id,
                                                           extended=1,
                                                           fields="chat_settings")
@@ -92,18 +92,20 @@ class Bot:
             self.json_messages.append_sticker(int(atts["attach1"]))
 
     def get_all_conversations(self):
+        def log_percents(percent, message):
+            print("\r" + " " * 50, f"\r{percent}%, {message}", end="")
+        
         configured_list_of_ids_path = "files/ids/configured_list_of_ids.txt"
-        print("receiving conversations...")
         offset = 0
         receive = 200
-        print("\r" + " " * 50, "\r10%, requesting total number of conversations", end="")
         total_conversations = self.api.messages.getConversations(offset=offset,
                                                                  count=0,
                                                                  extended=1,
                                                                  fields="first_name, last_name")["count"]
         collected_data = list()
         collected_data.append("USER ID\t\tNAME OF CHAT\n")
-        print("\r" + " " * 50, "\r30%, requesting data", end="")
+
+        log_percents(50, "requesting data")
         while total_conversations > offset:
             conversations = self.api.messages.getConversations(offset=offset,
                                                                count=receive,
@@ -122,12 +124,13 @@ class Bot:
                     collected_data.append(f"{peer_id}:\t{users[peer_id]}")
                 elif peer["type"] == "chat":
                     collected_data.append(f"{peer_id}:\t{el['conversation']['chat_settings']['title']}")
-            print("\r" + " " * 50, "\r50%, creating a list with conversations", end="")
 
+            log_percents(60, "creating a list with conversations")
             sleep(1)
-
+        
         with open(configured_list_of_ids_path, "w") as file:
-            print("\r" + " " * 50, "\r70%, creating a file with conversations", end="")
+            log_percents(90, "creating a file with conversations")
             file.write("\n".join(collected_data))
-        print("\r" + " " * 50, f"\rCreated file: {configured_list_of_ids_path}")
+
+        log_percents(100, f"rCreated file: {configured_list_of_ids_path}")
         exit()

@@ -32,4 +32,3 @@ def test():
     # TODO: add python unittests
     check_files()
     renew_logs_files()
-    print("Tests passed")
