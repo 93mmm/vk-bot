@@ -1,8 +1,10 @@
-from tests.test import *
+import bot
+
 
 def main():
-    test()
-    # TODO: run bot
+    current_session = bot.Bot()
+    current_session.main()
+
 
 if __name__ == "__main__":
     main()

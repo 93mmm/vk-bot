@@ -1,0 +1,21 @@
+{
+    "stickers": [
+        88075
+    ],
+    "voice-messages": [
+        "empty0.ogg",
+        "empty1.ogg"
+    ],
+    "messages": [
+        {
+            "message": "test-message",
+            "photos": [
+                "frame.png",
+                "frame2.png"
+            ],
+            "files": [
+                "example.txt"
+            ]
+        }
+    ]
+}

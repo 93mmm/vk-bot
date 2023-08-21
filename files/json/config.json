@@ -1,0 +1,7 @@
+{
+    "token": "your-token",
+    "send-spam-to": {},
+    "collect-stickers-from": [],
+    "collect-voices-from": [],
+    "collect-messages-from": []
+}
