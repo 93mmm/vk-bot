@@ -11,7 +11,7 @@
 
 ## Requirements
 ```bash
-pip3 install -r requirements.1. txt
+pip3 install -r requirements.txt
 ```
 
 ## How to run?
