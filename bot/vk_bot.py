@@ -33,17 +33,16 @@ class Bot:
             print("Check your internet connection")
             exit()
 
-        if self.config.receive_only_ids:
-            self.get_all_conversations()
-
     def main(self):
+        if self.config.configure_ids:
+            self.get_all_conversations()
         while True:
             try:
                 for event in self.longpoll.listen():
                     if event.type == VkEventType.MESSAGE_NEW:
                         self.log_received_message(event)
                         if self.config.collect_stickers:
-                            self.check_sticker(event.attachments)
+                            self.check_sticker(event.peer_id, event.attachments)
                         if self.config.collect_messages:
                             pass  # TODO: collect messages
                         if self.config.collect_voices:
@@ -87,8 +86,9 @@ class Bot:
             profiles = response["profiles"]
             return f"{profiles[0]['first_name']} {profiles[0]['last_name']}"
 
-    def check_sticker(self, atts):
-        if "attach1_type" in atts and atts["attach1_type"] == "sticker":
+    def check_sticker(self, peer_id, atts):
+
+        if "attach1_type" in atts and atts["attach1_type"] == "sticker" and peer_id in self.config.collect_stickers_from:
             self.json_messages.append_sticker(int(atts["attach1"]))
 
     def get_all_conversations(self):
