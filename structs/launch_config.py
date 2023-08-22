@@ -111,5 +111,8 @@ class LaunchConfig:
     
     def configure(self, from_what):
         delay, current_received = dict(), dict()
-        # TODO: configure list with type {"id": messages_delay}
+        for key, value in from_what.items():
+            key = int(key)
+            delay[key] = value
+            current_received[key] = 0
         return delay, current_received

@@ -8,7 +8,7 @@ class LogsWriter:
     def log_exception(self, strct):
         with open(EXCEPTIONS, "a") as file:
             file.write(str(strct))
-        print("Exception occurred")
+        print(strct.ex.__class__)
 
     def log_received(self, strct):
         with open(RECEIVED_MESSAGES, "a") as file:

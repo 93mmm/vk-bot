@@ -13,11 +13,8 @@ from requests import ConnectionError
 
 class Bot:
     def __init__(self):
-        self.log = logger.LogsWriter()
-        self.json_messages = json_cfg.JsonMessagesHolder()
         self.config = structs.LaunchConfig()
         self.config.check_config()
-
         tests.test()
 
         try:
@@ -31,6 +28,8 @@ class Bot:
         except ConnectionError:
             print("Check your internet connection")
             exit()
+        self.log = logger.LogsWriter()
+        self.messages = json_cfg.JsonMessagesHolder()
 
     def main(self):
         if self.config.configure_ids:
@@ -39,21 +38,32 @@ class Bot:
             try:
                 for event in self.longpoll.listen():
                     if event.type == VkEventType.MESSAGE_NEW:
+                        peer_id = event.peer_id
                         self.log_received_message(event)
                         if self.config.collect_stickers:
-                            self.check_sticker(event.peer_id, event.attachments)
+                            self.check_sticker(peer_id, event.attachments)
+
                         if self.config.collect_messages:
                             pass  # TODO: collect messages
+
                         if self.config.collect_voices:
                             pass  # TODO: collect voices
+
                         if self.config.send_spam:
-                            pass  # TODO: send spam
+                            if peer_id in self.config.current_received:
+                                if self.config.current_received[peer_id] == self.config.delay[peer_id]:
+                                    self.config.current_received[peer_id] = 0
+                                    self.messages.generate_random_message(self.vk, peer_id).send(self.api)
+                                else:
+                                    self.config.current_received[peer_id] += 1
+
             except KeyboardInterrupt:
                 print("\nKeyboard interrupt received, exiting.")
                 exit()
             except ConnectionError as ex:
-                self.log.log_exception(structs.ExceptionData(ex))
                 sleep(2)
+            except ReadTimeout:
+                print()
             except Exception as ex:
                 self.log.log_exception(structs.ExceptionData(ex))
                 sleep(2)
@@ -88,7 +98,9 @@ class Bot:
 
     def check_sticker(self, peer_id, atts):
         if "attach1_type" in atts and atts["attach1_type"] == "sticker" and peer_id in self.config.collect_stickers_from:
-            self.json_messages.append_sticker(int(atts["attach1"]))
+            #self.json_messages.append_sticker(int(atts["attach1"]))
+            pass
+        # TODO: rewrite json messages holder
 
     def get_all_conversations(self):
         def log_percents(percent, message):

@@ -12,23 +12,28 @@ def renew_logs_files():
 
 
 def check_files():
+    def warn(path):
+        print(f"WARNING: File {path} is not exists")
+
     messages = json_cfg.JsonMessagesHolder().messages
     to_exit = False
-    for el in messages["messages"]:
-        el = el["photos"]
-        for photo in el:
+    for msg in messages:
+        for photo in msg["photos"]:
             if not path.exists(PHOTOS_PATH + photo):
-                print(f"WARNING File {PHOTOS_PATH}{photo} is not exists")
+                warn(PHOTOS_PATH + photo)
                 to_exit = True
-    for voice in messages["voice-messages"]:
-        if not path.exists(VOICE_PATH + voice):
-            print(f"WARNING File {VOICE_PATH}{voice} is not exists")
+        for doc in msg["files"]:
+            if not path.exists(DOCS_PATH + doc):
+                warn(DOCS_PATH + doc)
+                to_exit = True
+        if msg["voice-message"] != "" and not path.exists(VOICE_PATH + voice):
+            warn(VOICE_PATH + voice)
             to_exit = True
+
     if to_exit:
         exit()
 
 
 def test():
-    # TODO: add python unittests
     check_files()
     renew_logs_files()

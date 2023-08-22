@@ -1,46 +1,42 @@
 import json
 from random import choice
+from structs import TextMessage, Voice, Doc, Photo
 
 MESSAGES = "files/json/messages.json"
 
+PHOTOS_PATH = "files/assets/photos/"
+VOICE_PATH = "files/assets/voice/"
+DOCS_PATH = "files/assets/files/"
+
+
 
 class JsonMessagesHolder:
-    # TODO: return msg structs
     def __init__(self):
         with open(MESSAGES) as file:
             self.messages = json.load(file)
 
-    def generate_random_message(self):
-        def get_random_sticker():
-            return choice(self.messages["stickers"])
+    def generate_random_message(self, vk, peer_id):
+        selected = choice(self.messages)
+        attachments = list()
+        text = selected["text"]
+        sticker_id = selected["sticker_id"]
 
-        def get_random_voice():
-            return choice(self.messages["voice-messages"])
+        for filename in selected["photos"]:
+            attachments.append(Photo(vk, PHOTOS_PATH + filename))
+        for filename in selected["files"]:
+            attachments.append(Doc(vk, DOCS_PATH + filename))
+        for filename in selected["voice-message"]:
+            attachments.append(Voice(vk, VOICE_PATH + filename))
 
-        def get_random_message():
-            return choice(self.messages["messages"])
+        return TextMessage(peer_id, attachments, text, sticker_id)
 
-        todo = choice([get_random_sticker,
-                       get_random_voice,
-                       get_random_message,
-                       get_random_message])
-        return todo()
-
-    def append_sticker(self, sticker_id: int):
-        self.messages["stickers"].append(sticker_id)
-        self.write_changes()
-
-    def append_voice_message(self, file: str):
-        self.messages["voice-messages"].append(file)
-        self.write_changes()
-
-    def append_message(self):
-        # TODO: edit
-        obj_to_paste = dict()
-        obj_to_paste["message"] = str()
-        obj_to_paste["photos"] = list()
-        obj_to_paste["files"] = list()
-        self.messages["messages"].append(obj_to_paste)
+    def add_new_message(self, text="", attachments=list(), sticker_id=""):
+        new_message = dict()
+        new_message["text"] = text
+        new_message["photos"] = attachments
+        new_message["files"] = attachments
+        new_message["sticker_id"] = sticker_id
+        new_message["voice-message"] = sattachments
         self.write_changes()
 
     def write_changes(self):
