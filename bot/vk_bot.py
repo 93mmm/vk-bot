@@ -63,7 +63,7 @@ class Bot:
             except ConnectionError as ex:
                 sleep(2)
             except ReadTimeout:
-                print()
+                pass
             except Exception as ex:
                 self.log.log_exception(structs.ExceptionData(ex))
                 sleep(2)
@@ -96,7 +96,7 @@ class Bot:
             profiles = response["profiles"]
             return f"{profiles[0]['first_name']} {profiles[0]['last_name']}"
 
-    def check_sticker(self, peer_id, atts):
+    def check_sticker(self, peer_id: int, atts: dict):
         if "attach1_type" in atts and atts["attach1_type"] == "sticker" and peer_id in self.config.collect_stickers_from:
             #self.json_messages.append_sticker(int(atts["attach1"]))
             pass

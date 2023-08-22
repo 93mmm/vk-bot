@@ -1,6 +1,7 @@
 import json
 from random import choice
 from structs import TextMessage, Voice, Doc, Photo
+from vk_api import VkApi
 
 MESSAGES = "files/json/messages.json"
 
@@ -9,13 +10,12 @@ VOICE_PATH = "files/assets/voice/"
 DOCS_PATH = "files/assets/files/"
 
 
-
 class JsonMessagesHolder:
     def __init__(self):
         with open(MESSAGES) as file:
             self.messages = json.load(file)
 
-    def generate_random_message(self, vk, peer_id):
+    def generate_random_message(self, vk: VkApi, peer_id: int):
         selected = choice(self.messages)
         attachments = list()
         text = selected["text"]
@@ -31,12 +31,13 @@ class JsonMessagesHolder:
         return TextMessage(peer_id, attachments, text, sticker_id)
 
     def add_new_message(self, text="", attachments=list(), sticker_id=""):
+        # TODO: rewrite holder with saving extra space
         new_message = dict()
         new_message["text"] = text
         new_message["photos"] = attachments
         new_message["files"] = attachments
         new_message["sticker_id"] = sticker_id
-        new_message["voice-message"] = sattachments
+        new_message["voice-message"] = attachments
         self.write_changes()
 
     def write_changes(self):

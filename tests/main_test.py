@@ -12,8 +12,8 @@ def renew_logs_files():
 
 
 def check_files():
-    def warn(path):
-        print(f"WARNING: File {path} is not exists")
+    def warn(f: str):
+        print(f"WARNING: File {f} is not exists")
 
     messages = json_cfg.JsonMessagesHolder().messages
     to_exit = False
@@ -26,7 +26,8 @@ def check_files():
             if not path.exists(DOCS_PATH + doc):
                 warn(DOCS_PATH + doc)
                 to_exit = True
-        if msg["voice-message"] != "" and not path.exists(VOICE_PATH + voice):
+        voice = msg["voice-message"]
+        if voice != "" and not path.exists(VOICE_PATH + voice):
             warn(VOICE_PATH + voice)
             to_exit = True
 

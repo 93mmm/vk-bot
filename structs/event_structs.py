@@ -19,11 +19,8 @@ class ExceptionData:
 
 @dataclass
 class ReceivedMessage:
-    def __init__(self, text: str,
-                 id_from: int,
-                 name_from: str,
-                 id_conversation: int,
-                 name_conversation: str):
+    def __init__(self, text: str, id_from: int, name_from: str,
+                 id_conversation: int, name_conversation: str):
         self.text = text
         self.id_from = id_from
         self.name_from = name_from
@@ -43,9 +40,7 @@ class ReceivedMessage:
 
 @dataclass
 class SentMessage:
-    def __init__(self, text: str,
-                 id_conversation:
-                 int, name_conversation: str):
+    def __init__(self, text: str, id_conversation: int, name_conversation: str):
         self.text = text
         self.id_conversation = id_conversation
         self.name_conversation = name_conversation
