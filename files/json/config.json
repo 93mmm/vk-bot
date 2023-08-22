@@ -1,6 +1,6 @@
 {
     "token": "your-token",
-    "send-spam-to": {},
+    "send-spam-to": {"2000000131": 1},
     "collect-stickers-from": [],
     "collect-voices-from": [],
     "collect-messages-from": []

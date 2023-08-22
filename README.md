@@ -1,7 +1,7 @@
 # VK pseudo spam bot
 
-- [ ] Sends spam to selected conferences through a certain interval in messages
-- [x] Collects stickers sent in selected conversations
+- [x] Sends spam to selected conferences through a certain interval in messages
+- [ ] Collects stickers sent in selected conversations
 - [ ] Collects voice messages sent in selected conversations
 - [ ] Collects messages sent in selected conversations
 - [x] Composes a special file that contains the ID and names of all chats of the account (ignores chats with communities)

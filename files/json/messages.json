@@ -1,21 +1,13 @@
-{
-    "stickers": [
-        88075
-    ],
-    "voice-messages": [
-        "empty0.ogg",
-        "empty1.ogg"
-    ],
-    "messages": [
-        {
-            "message": "test-message",
-            "photos": [
-                "frame.png",
-                "frame2.png"
-            ],
-            "files": [
-                "example.txt"
-            ]
-        }
-    ]
-}
+[
+    {
+        "text": "test-message",
+        "photos": [
+            "frame.png"
+        ],
+        "files": [
+            "example.txt"
+        ],
+        "sticker_id": 0,
+        "voice-message": ""
+    }
+]

@@ -13,25 +13,23 @@ from requests import ConnectionError
 
 class Bot:
     def __init__(self):
-        self.log = logger.LogsWriter()
-        self.json_messages = json_cfg.JsonMessagesHolder()
         self.config = structs.LaunchConfig()
         self.config.check_config()
-
         tests.test()
 
         try:
-            print("connecting...")
             self.vk = VkApi(token=self.config.token)
             self.api = self.vk.get_api()
             self.longpoll = VkLongPoll(self.vk)
-            print("success")
+            print("Connected to VK server")
         except ApiError:
             print("Check your token")
             exit()
         except ConnectionError:
             print("Check your internet connection")
             exit()
+        self.log = logger.LogsWriter()
+        self.messages = json_cfg.JsonMessagesHolder()
 
     def main(self):
         if self.config.configure_ids:
@@ -40,24 +38,34 @@ class Bot:
             try:
                 for event in self.longpoll.listen():
                     if event.type == VkEventType.MESSAGE_NEW:
+                        peer_id = event.peer_id
                         self.log_received_message(event)
                         if self.config.collect_stickers:
-                            self.check_sticker(event.peer_id, event.attachments)
+                            self.check_sticker(peer_id, event.attachments)
+
                         if self.config.collect_messages:
                             pass  # TODO: collect messages
+
                         if self.config.collect_voices:
                             pass  # TODO: collect voices
+
                         if self.config.send_spam:
-                            pass  # TODO: send spam
+                            if peer_id in self.config.current_received:
+                                if self.config.current_received[peer_id] == self.config.delay[peer_id]:
+                                    self.config.current_received[peer_id] = 0
+                                    self.messages.generate_random_message(self.vk, peer_id).send(self.api)
+                                else:
+                                    self.config.current_received[peer_id] += 1
+
             except KeyboardInterrupt:
                 print("\nKeyboard interrupt received, exiting.")
                 exit()
             except ConnectionError as ex:
-                self.log.log_exception(structs.ExceptionData(ex))
                 sleep(2)
+            except ReadTimeout:
+                print()
             except Exception as ex:
                 self.log.log_exception(structs.ExceptionData(ex))
-                print("Exception occurred")
                 sleep(2)
 
     def log_received_message(self, event: Event):
@@ -69,6 +77,7 @@ class Bot:
         self.log.log_received(received_message)
 
     def get_sender_name(self, user_id: int, from_user: bool):
+        # TODO: check if message from community
         if from_user:
             return "Bot's account"
         user = self.api.users.get(user_ids=str(user_id))[0]
@@ -76,6 +85,7 @@ class Bot:
         return user
 
     def get_conversation_name(self, peer_id: int):
+        # TODO: check if message from community
         response = self.api.messages.getConversationsById(peer_ids=peer_id,
                                                           extended=1,
                                                           fields="chat_settings")
@@ -87,23 +97,26 @@ class Bot:
             return f"{profiles[0]['first_name']} {profiles[0]['last_name']}"
 
     def check_sticker(self, peer_id, atts):
-
         if "attach1_type" in atts and atts["attach1_type"] == "sticker" and peer_id in self.config.collect_stickers_from:
-            self.json_messages.append_sticker(int(atts["attach1"]))
+            #self.json_messages.append_sticker(int(atts["attach1"]))
+            pass
+        # TODO: rewrite json messages holder
 
     def get_all_conversations(self):
+        def log_percents(percent, message):
+            print("\r" + " " * 50, f"\r{percent}%, {message}", end="")
+        
         configured_list_of_ids_path = "files/ids/configured_list_of_ids.txt"
-        print("receiving conversations...")
         offset = 0
         receive = 200
-        print("\r" + " " * 50, "\r10%, requesting total number of conversations", end="")
         total_conversations = self.api.messages.getConversations(offset=offset,
                                                                  count=0,
                                                                  extended=1,
                                                                  fields="first_name, last_name")["count"]
         collected_data = list()
         collected_data.append("USER ID\t\tNAME OF CHAT\n")
-        print("\r" + " " * 50, "\r30%, requesting data", end="")
+
+        log_percents(50, "requesting data")
         while total_conversations > offset:
             conversations = self.api.messages.getConversations(offset=offset,
                                                                count=receive,
@@ -122,12 +135,13 @@ class Bot:
                     collected_data.append(f"{peer_id}:\t{users[peer_id]}")
                 elif peer["type"] == "chat":
                     collected_data.append(f"{peer_id}:\t{el['conversation']['chat_settings']['title']}")
-            print("\r" + " " * 50, "\r50%, creating a list with conversations", end="")
 
+            log_percents(60, "creating a list with conversations")
             sleep(1)
-
+        
         with open(configured_list_of_ids_path, "w") as file:
-            print("\r" + " " * 50, "\r70%, creating a file with conversations", end="")
+            log_percents(90, "creating a file with conversations")
             file.write("\n".join(collected_data))
-        print("\r" + " " * 50, f"\rCreated file: {configured_list_of_ids_path}")
+
+        log_percents(100, f"rCreated file: {configured_list_of_ids_path}")
         exit()
