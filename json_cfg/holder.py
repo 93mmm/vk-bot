@@ -10,6 +10,11 @@ VOICE_PATH = "files/assets/voice/"
 DOCS_PATH = "files/assets/files/"
 
 
+def save_into_json_file(path: str, info: dict):
+    with open(path, "w") as file:
+        file.write(json.dumps(info, indent=4))
+
+
 class JsonMessagesHolder:
     def __init__(self):
         with open(MESSAGES) as file:
@@ -52,8 +57,12 @@ class JsonMessagesHolder:
             elif type(el) == Photo:
                 new_message["photos"] = el.path
 
-        self._write_changes()
+        save_into_json_file(MESSAGES, new_message)
 
-    def _write_changes(self):
-        with open(MESSAGES, "w") as file:
-            file.write(json.dumps(self.messages, indent=4))
+
+class JsonDialogNamesHolder:
+    def __init__(self):
+        pass
+
+    def get_name(self, name):
+        pass

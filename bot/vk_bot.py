@@ -85,14 +85,16 @@ class Bot:
             print("\r" + " " * 50, f"\r{percentage}%, {message}", end="")
         
         configured_list_of_ids_path = "files/ids/configured_list_of_ids.txt"
+        json_file = "files/json/conversations.json"
         offset = 0
         receive = 200
         total_conversations = self.api.messages.getConversations(offset=offset,
                                                                  count=0,
                                                                  extended=1,
                                                                  fields="first_name, last_name")["count"]
-        collected_data = list()
-        collected_data.append("USER ID\t\tNAME OF CHAT\n")
+        collected_data_dict = dict()
+        collected_data_list = list()
+        collected_data_list.append("USER ID\t\tNAME OF CHAT\n")
 
         log_percents(50, "requesting data")
         while total_conversations > offset:
@@ -110,16 +112,21 @@ class Bot:
                 peer_id = str(peer["id"])
 
                 if peer["type"] == "user":
-                    collected_data.append(f"{peer_id}:\t{users[peer_id]}")
+                    usr = users[peer_id]
+                    collected_data_dict[peer_id] = usr
+                    collected_data_list.append(f"{peer_id}:\t{usr}")
                 elif peer["type"] == "chat":
-                    collected_data.append(f"{peer_id}:\t{el['conversation']['chat_settings']['title']}")
+                    usr = el['conversation']['chat_settings']['title']
+                    collected_data_dict[peer_id] = usr
+                    collected_data_list.append(f"{peer_id}:\t{usr}")
 
             log_percents(60, "creating a list with conversations")
             sleep(1)
         
         with open(configured_list_of_ids_path, "w") as file:
             log_percents(90, "creating a file with conversations")
-            file.write("\n".join(collected_data))
+            file.write("\n".join(collected_data_list))
+        # TODO: write collected_data_dict into json_file
 
         log_percents(100, f"Created file: {configured_list_of_ids_path}")
         exit()

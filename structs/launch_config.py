@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 import json
 import argparse
 from sys import exit
@@ -6,9 +5,6 @@ from sys import exit
 CONFIG = "files/json/config.json"
 
 
-
-
-@dataclass
 class LaunchConfig:
     def __init__(self):
         with open(CONFIG) as file:
@@ -39,10 +35,10 @@ class LaunchConfig:
         self.remove_subscriptions = args.remove_subscriptions
         self.remove_friends = args.remove_friends
         self.remove_videos = args.remove_videos
-        #  TODO: add flag -load-only-docs to README.md
+
+        # TODO: add flag for creating message logs
 
     def check_config(self):
-        # TODO: improve checking and add flags
         print(str(self))
         bot_tools = [self.send_spam, self.collect_stickers, self.collect_voices,
                      self.collect_messages, self.load_only_docs]

@@ -1,11 +1,9 @@
-from dataclasses import dataclass
 from datetime import datetime
 from vk_api.longpoll import Event
 from vk_api.vk_api import VkApiMethod
 from structs.attachment_types import *
 
 
-@dataclass
 class ExceptionData:
     def __init__(self, ex, **variables):
         self.ex = ex
@@ -20,7 +18,6 @@ class ExceptionData:
         return message + "\n"
 
 
-@dataclass
 class ReceivedMessage:
     STICKER = 1
     VOICE_MESSAGE = 2
@@ -48,6 +45,7 @@ class ReceivedMessage:
         self.time = event.datetime
 
     def _get_sender_name(self, event: Event) -> str:
+        # TODO: create a json file with ids and conversation names
         if event.from_user:
             usr = self.api.users.get(user_ids=str(self.conversation_id))[0]
             return f"{usr['first_name']} {usr['last_name']}"
@@ -59,6 +57,9 @@ class ReceivedMessage:
             )["items"][0]["chat_settings"]["title"]
         elif event.from_group:
             return self.api.groups.getById(group_id=abs(self.conversation_id))[0]["name"]
+
+    def _get_sender_name_from_database(self):
+        pass
 
     def _get_attachments(self, attachments: dict) -> list[Doc | Photo | Voice]:
         list_of_attachments: list[Doc | Photo | Voice] = list()
@@ -108,7 +109,6 @@ class ReceivedMessage:
         return "\n".join(output)
 
 
-@dataclass
 class SentMessage:
     def __init__(self, text: str, id_conversation: int, name_conversation: str):
         self.text = text

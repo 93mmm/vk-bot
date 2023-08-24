@@ -1,5 +1,6 @@
 from random import randint
 from structs.attachment_types import *
+from datetime import datetime
 
 
 class TextMessage:
@@ -23,3 +24,19 @@ class TextMessage:
                           message=self.text, 
                           attachment=",".join(self.attachments),
                           sticker_id=self.sticker_id)
+
+    def __str__(self):
+        output = list()
+        if self.text != "":
+            output.append(f"Text: {self.text}")
+        if self.sticker_id != 0:
+            output.append(f"Sticker: {self.sticker_id}")
+
+        output.append(f"To: {self.peer_id}")
+        atts = "Attachments"
+        if len(self.attachments) != 0:
+            attachments = " | ".join(list(map(str, self.attachments)))
+            output.append(f"{atts}: {attachments}")
+        output.append(f"At the time: {datetime.now()}\n\n")
+
+        return "\n".join(output)
