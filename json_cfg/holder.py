@@ -16,30 +16,44 @@ class JsonMessagesHolder:
             self.messages = json.load(file)
 
     def generate_random_message(self, vk: VkApi, peer_id: int):
+        # TODO: rewrite
         selected = choice(self.messages)
         attachments = list()
         text = selected["text"]
         sticker_id = selected["sticker_id"]
 
         for filename in selected["photos"]:
-            attachments.append(Photo(vk, PHOTOS_PATH + filename))
+            photo = Photo()
+            photo.prepare_to_send(vk, PHOTOS_PATH + filename)
+            attachments.append(photo)
         for filename in selected["files"]:
-            attachments.append(Doc(vk, DOCS_PATH + filename))
+            doc = Doc()
+            doc.prepare_to_send(vk, DOCS_PATH + filename)
+            attachments.append(doc)
         for filename in selected["voice-message"]:
-            attachments.append(Voice(vk, VOICE_PATH + filename))
+            vm = Voice()
+            vm.prepare_to_send(vk, VOICE_PATH + filename)
+            attachments.append(vm)
 
         return TextMessage(peer_id, attachments, text, sticker_id)
 
-    def add_new_message(self, text="", attachments=list(), sticker_id=""):
-        # TODO: rewrite holder with saving extra space
+    def add_new_message(self, text="", sticker_id=0, attachments=list()):
+        # TODO: rewrite
         new_message = dict()
-        new_message["text"] = text
-        new_message["photos"] = attachments
-        new_message["files"] = attachments
-        new_message["sticker_id"] = sticker_id
-        new_message["voice-message"] = attachments
-        self.write_changes()
+        if text != "":
+            new_message["text"] = text
+        if sticker_id != 0:
+            new_message["sticker_id"] = sticker_id
+        for el in attachments:
+            if type(el) == Voice:
+                new_message["voice-message"] = el.path
+            elif type(el) == Doc:
+                new_message["files"] = el.path
+            elif type(el) == Photo:
+                new_message["photos"] = el.path
 
-    def write_changes(self):
+        self._write_changes()
+
+    def _write_changes(self):
         with open(MESSAGES, "w") as file:
             file.write(json.dumps(self.messages, indent=4))

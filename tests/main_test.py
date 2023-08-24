@@ -1,13 +1,17 @@
 from os import path
 from sys import exit
 
-from tests.paths import *
-import json_cfg
-import logger
+from json_cfg import JsonMessagesHolder
+from logger import LogsWriter
+
+
+PHOTOS_PATH = "files/assets/photos/"
+VOICE_PATH = "files/assets/voice/"
+DOCS_PATH = "files/assets/files/"
 
 
 def renew_logs_files():
-    files = logger.LogsWriter()
+    files = LogsWriter()
     files.renew_files()
 
 
@@ -15,7 +19,7 @@ def check_files():
     def warn(f: str):
         print(f"WARNING: File {f} is not exists")
 
-    messages = json_cfg.JsonMessagesHolder().messages
+    messages = JsonMessagesHolder().messages
     to_exit = False
     for msg in messages:
         for photo in msg["photos"]:
