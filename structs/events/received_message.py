@@ -1,22 +1,9 @@
-from datetime import datetime
+from vk_api import VkApi
 from vk_api.longpoll import Event
 from vk_api.vk_api import VkApiMethod
-from structs.attachment_types import *
 
-
-class ExceptionData:
-    def __init__(self, ex, **variables):
-        self.ex = ex
-        self.variables = variables
-        self.time = datetime.now()
-
-    def __str__(self):
-        message = f"Thrown exception: {repr(self.ex)}\nVariables:\n"
-        for key, value in self.variables.items():
-            message += f"{key} = {value}\n"
-        message += f"\nAt the time: {self.time}\n\n"
-        return message + "\n"
-
+from structs import JsonDialogsDB
+from message import Voice, Doc, Photo
 
 class ReceivedMessage:
     STICKER = 1
@@ -26,11 +13,13 @@ class ReceivedMessage:
     def __init__(self, vk: VkApi, event: Event):
         self.api: VkApiMethod = vk.get_api()
 
+        self.db_holder: JsonDialogsDB = JsonDialogsDB()
+
         self.conversation_id: int = None
         self.conversation_name: str = None
         self.sticker_id: int = None
 
-        self.attachments: list[Doc | Photo | Voice] = None
+        self.attachments: list[Voice | Doc | Photo] = None
         self.message_text: str = None
         self.time: int = None
 
@@ -45,24 +34,23 @@ class ReceivedMessage:
         self.time = event.datetime
 
     def _get_sender_name(self, event: Event) -> str:
-        # TODO: create a json file with ids and conversation names
-        if event.from_user:
-            usr = self.api.users.get(user_ids=str(self.conversation_id))[0]
-            return f"{usr['first_name']} {usr['last_name']}"
-        elif event.from_chat:
-            return (
-                self.api.messages.getConversationsById(peer_ids=self.conversation_id,
-                                                       extended=1,
-                                                       fields="chat_settings")
-            )["items"][0]["chat_settings"]["title"]
-        elif event.from_group:
-            return self.api.groups.getById(group_id=abs(self.conversation_id))[0]["name"]
+        name = self.db_holder.get_name(event.peer_id)
+        if name == self.db_holder.NOT_FOUND:
+            if event.from_user:
+                usr = self.api.users.get(user_ids=str(self.conversation_id))[0]
+                return f"{usr['first_name']} {usr['last_name']}"
+            elif event.from_chat:
+                return (
+                    self.api.messages.getConversationsById(peer_ids=self.conversation_id,
+                                                        extended=1,
+                                                        fields="chat_settings")
+                )["items"][0]["chat_settings"]["title"]
+            elif event.from_group:
+                return self.api.groups.getById(group_id=abs(self.conversation_id))[0]["name"]
+        return name
 
-    def _get_sender_name_from_database(self):
-        pass
-
-    def _get_attachments(self, attachments: dict) -> list[Doc | Photo | Voice]:
-        list_of_attachments: list[Doc | Photo | Voice] = list()
+    def _get_attachments(self, attachments: dict) -> list[Voice | Doc | Photo]:
+        list_of_attachments: list[Voice | Doc | Photo] = list()
 
         if "attach1_kind" in attachments and attachments["attach1_kind"] == "audiomsg":
             list_of_attachments.append(attachments["attach1_type"] + attachments["attach1"])
@@ -104,22 +92,6 @@ class ReceivedMessage:
         if len(self.attachments) != 0:
             attachments = " | ".join(list(map(str, self.attachments)))
             output.append(f"{atts}: {attachments}")
-        output.append(f"At the time: {self.time}\n\n")
-
-        return "\n".join(output)
-
-
-class SentMessage:
-    def __init__(self, text: str, id_conversation: int, name_conversation: str):
-        self.text = text
-        self.id_conversation = id_conversation
-        self.name_conversation = name_conversation
-        self.time = datetime.now()
-
-    def __str__(self):
-        output = list()
-        output.append(f"Sent message: {self.text}")
-        output.append(f"In conversation: {self.id_conversation} ({self.name_conversation})")
         output.append(f"At the time: {self.time}\n\n")
 
         return "\n".join(output)

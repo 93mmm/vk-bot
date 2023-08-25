@@ -1,7 +1,7 @@
-from logger import LogsWriter
-from json_cfg import JsonMessagesHolder
-from structs import LaunchConfig, ReceivedMessage, ExceptionData
+from structs import *
+
 import tests
+from helpers import write_json
 
 from vk_api import VkApi
 from vk_api.vk_api import VkApiMethod
@@ -13,13 +13,31 @@ from sys import exit
 from requests import ConnectionError
 
 
+EXCEPTIONS = "files/logs/errors.txt"
+RECEIVED_MESSAGES = "files/logs/received_messages.txt"
+SENT_MESSAGES = "files/logs/sent_messages.txt"
+
+
+def log_exception(strct: Ex):
+    with open(EXCEPTIONS, "a") as file:
+        file.write(str(strct))
+    print(repr(strct.ex))
+
+def log_received(strct: ReceivedMessage):
+    with open(RECEIVED_MESSAGES, "a") as file:
+        file.write(str(strct))
+
+def log_sent(strct: SentMessage):
+    with open(SENT_MESSAGES, "a") as file:
+        file.write(str(strct))
+
+
 class Bot:
     def __init__(self):
         self.config: LaunchConfig = None
         self.vk: VkApi = None
         self.api: VkApiMethod = None
         self.longpoll: VkLongPoll = None
-        self.log: LogsWriter = None
         self.messages: JsonMessagesHolder = None
 
         self.config = LaunchConfig()
@@ -37,7 +55,6 @@ class Bot:
         except ConnectionError:
             print("Check your internet connection")
             exit()
-        self.log = LogsWriter()
         self.messages = JsonMessagesHolder()
 
     def main(self):
@@ -49,17 +66,15 @@ class Bot:
                     if event.type == VkEventType.MESSAGE_NEW and not event.from_me:
                         peer_id = event.peer_id
                         message = ReceivedMessage(self.vk, event)
-                        self.log.log_received(message)
+                        log_received(message)
                         # TODO: configure new message, log this message into event
                         # TODO: check if message is text message
 
                         if self.config.collect_stickers and message.get_type() == ReceivedMessage.STICKER:
-                            sticker = message.sticker_id
-                            print(sticker)
-                            # TODO: end this
+                            self.messages.add_new_message(message)
 
                         if self.config.collect_messages:
-                            pass  # TODO: collect messages
+                            self.messages.add_new_message(message)
 
                         if self.config.collect_voices and message.get_type() == ReceivedMessage.VOICE_MESSAGE:
                             pass  # TODO: end this
@@ -77,7 +92,7 @@ class Bot:
             except ConnectionError as ex:
                 sleep(2)
             except Exception as ex:
-                self.log.log_exception(ExceptionData(ex))
+                log_exception(Ex(ex))
                 sleep(2)
 
     def get_all_conversations(self):
@@ -86,17 +101,19 @@ class Bot:
         
         configured_list_of_ids_path = "files/ids/configured_list_of_ids.txt"
         json_file = "files/json/conversations.json"
+        collected_data_dict = dict()
+        collected_data_list = list()
+
         offset = 0
         receive = 200
         total_conversations = self.api.messages.getConversations(offset=offset,
                                                                  count=0,
                                                                  extended=1,
                                                                  fields="first_name, last_name")["count"]
-        collected_data_dict = dict()
-        collected_data_list = list()
+        
         collected_data_list.append("USER ID\t\tNAME OF CHAT\n")
-
         log_percents(50, "requesting data")
+        # TODO: optimize
         while total_conversations > offset:
             conversations = self.api.messages.getConversations(offset=offset,
                                                                count=receive,
@@ -126,7 +143,8 @@ class Bot:
         with open(configured_list_of_ids_path, "w") as file:
             log_percents(90, "creating a file with conversations")
             file.write("\n".join(collected_data_list))
-        # TODO: write collected_data_dict into json_file
+        
+        write_json(json_file, collected_data_dict)
 
         log_percents(100, f"Created file: {configured_list_of_ids_path}")
         exit()

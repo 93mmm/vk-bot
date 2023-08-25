@@ -1,6 +1,7 @@
 from random import randint
-from structs.attachment_types import *
 from datetime import datetime
+
+from message import Voice, Doc, Photo
 
 
 class TextMessage:
@@ -16,8 +17,8 @@ class TextMessage:
         self.sticker_id = sticker_id
     
     def send(self, api):
-        for index, element in self.attachments:
-            self.attachments = self.attachments[index].send()
+        for index, element in enumerate(self.attachments):
+            self.attachments[index] = self.attachments[index].send()
 
         api.messages.send(peer_id=self.peer_id, 
                           random_id=randint(0, 100000),

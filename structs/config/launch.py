@@ -1,14 +1,14 @@
-import json
 import argparse
 from sys import exit
+
+from helpers import read_json
 
 CONFIG = "files/json/config.json"
 
 
 class LaunchConfig:
     def __init__(self):
-        with open(CONFIG) as file:
-            info = json.load(file)
+        json_data = read_json(CONFIG)
 
         self.token: str = None
         self.delay: dict = None
@@ -18,12 +18,12 @@ class LaunchConfig:
         self.collect_voices_from: set = None
         self.collect_messages_from: set = None
 
-        self.token = info["token"]
-        self.delay, self.current_received = self._configure(info["send-spam-to"])
+        self.token = json_data["token"]
+        self.delay, self.current_received = self._configure(json_data["send-spam-to"])
 
-        self.collect_stickers_from = set(info["collect-stickers-from"])
-        self.collect_voices_from = set(info["collect-voices-from"])
-        self.collect_messages_from = set(info["collect-messages-from"])
+        self.collect_stickers_from = set(json_data["collect-stickers-from"])
+        self.collect_voices_from = set(json_data["collect-voices-from"])
+        self.collect_messages_from = set(json_data["collect-messages-from"])
 
         args = self._get_props()
         self.send_spam = args.send_spam

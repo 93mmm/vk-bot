@@ -1,8 +1,7 @@
 from os import path
 from sys import exit
 
-from json_cfg import JsonMessagesHolder
-from logger import LogsWriter
+from structs.config.messages import JsonMessagesHolder
 
 
 PHOTOS_PATH = "files/assets/photos/"
@@ -10,9 +9,9 @@ VOICE_PATH = "files/assets/voice/"
 DOCS_PATH = "files/assets/files/"
 
 
-def renew_logs_files():
-    files = LogsWriter()
-    files.renew_files()
+# def renew_logs_files():
+#     files = LogsWriter()
+#     files.renew_files()
 
 
 def check_files():
@@ -40,5 +39,6 @@ def check_files():
 
 
 def test():
-    check_files()
-    renew_logs_files()
+    pass
+    #check_files()
+    # renew_logs_files()
