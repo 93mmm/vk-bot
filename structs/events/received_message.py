@@ -2,8 +2,10 @@ from vk_api import VkApi
 from vk_api.longpoll import Event
 from vk_api.vk_api import VkApiMethod
 
+from helpers import get_photo_url
 from structs import JsonDialogsDB
 from message import Voice, Doc, Photo
+
 
 class ReceivedMessage:
     STICKER = 1
@@ -25,6 +27,7 @@ class ReceivedMessage:
 
         self.is_it_voice_message: str = False
 
+        self.message_id = event.message_id
         self.conversation_id = event.peer_id
         self.conversation_name = self._get_sender_name(event)
         self.sticker_id = self._get_sticker(event.attachments)
@@ -51,20 +54,31 @@ class ReceivedMessage:
 
     def _get_attachments(self, attachments: dict) -> list[Voice | Doc | Photo]:
         list_of_attachments: list[Voice | Doc | Photo] = list()
-
-        if "attach1_kind" in attachments and attachments["attach1_kind"] == "audiomsg":
-            list_of_attachments.append(attachments["attach1_type"] + attachments["attach1"])
-            self.is_it_voice_message = True
-            return list_of_attachments
-
-        for i in range(1, 11):
-            attach_n_type = f"attach{i}_type"
-            attach_n = f"attach{i}"
-            if (attach_n_type in attachments and
-                    (attachments[attach_n_type] == "photo" or attachments[attach_n_type] == "doc")):
-                list_of_attachments.append(attachments[attach_n_type] + attachments[attach_n])
-            else:
-                return list_of_attachments
+        rsp = self.api.messages.getById(message_ids=self.message_id)["items"][0]["attachments"]
+        for el in rsp:
+            if el["type"] == "photo":
+                received_photo = el["photo"]
+                url = get_photo_url(received_photo["sizes"])
+                if "png" in url:
+                    ext = "png"
+                elif "jpg" in url or "jpeg":
+                    ext = "jpg"
+                else:
+                    ext = "gif"
+                path = f"photo{received_photo['owner_id']}_{received_photo['id']}.{ext}"
+                photo = Photo()
+                photo.prepare_to_download(path, url)
+                list_of_attachments.append(photo)
+            elif el["type"] == "doc":
+                doc = Doc()
+                doc.prepare_to_download(el["doc"]["title"], el["doc"]["url"])
+                list_of_attachments.append(doc)
+            elif el["type"] == "audio_message":
+                vm = Voice()
+                path = f"audio_message{el['audio_message']['owner_id']}_{el['audio_message']['id']}.ogg"
+                vm.prepare_to_download(path, el["audio_message"]["link_ogg"])
+                list_of_attachments.append(vm)
+        return list_of_attachments
 
     def _get_sticker(self, attachments: dict) -> int:
         if "attach1_type" in attachments and attachments["attach1_type"] == "sticker":
@@ -77,6 +91,10 @@ class ReceivedMessage:
         if len(self.attachments) > 0 and type(self.attachments[0]) == Voice:
             return self.VOICE_MESSAGE
         return self.TEXT_MESSAGE
+    
+    def download_attachments(self):
+        for el in self.attachments:
+            el.download()
 
     def __str__(self):
         output = list()

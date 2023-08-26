@@ -14,7 +14,6 @@ class JsonMessagesHolder:
         self.messages = read_json(MESSAGES_JSON)
 
     def generate_random_message(self, vk: VkApi, peer_id: int):
-        # TODO: rewrite with checks
         selected = choice(self.messages)
         text = ""
         sticker_id = 0
@@ -41,21 +40,29 @@ class JsonMessagesHolder:
 
         return TextMessage(peer_id, attachments, text, sticker_id)
 
-    def add_new_message(self, msg: ReceivedMessage):
-        # TODO: rewrite
+    def add_new_message(self, msg: ReceivedMessage, save_attachments: bool=False):
         new_message = dict()
         if msg.message_text != "":
             new_message["text"] = msg.message_text
         if msg.sticker_id != 0:
             new_message["sticker_id"] = msg.sticker_id
+        docs = list()
+        photos = list()
         for el in msg.attachments:
             if type(el) == Voice:
-                new_message["voice-message"] = el.path
+                new_message["voice-message"] = str(el)
             elif type(el) == Doc:
-                new_message["files"] = el.path
+                docs.append(str(el))
             elif type(el) == Photo:
-                new_message["photos"] = el.path
+                photos.append(str(el))
+        if len(docs) > 0:
+            new_message["files"] = docs
+        if len(photos) > 0:
+            new_message["photos"] = photos
+
         if new_message != dict() and not new_message in self.messages:
             self.messages.append(new_message)
 
             write_json(MESSAGES_JSON, self.messages)
+            if save_attachments:
+                msg.download_attachments()

@@ -63,17 +63,17 @@ class Bot:
                         peer_id = event.peer_id
                         message = ReceivedMessage(self.vk, event)
                         log_received(message)
-                        # TODO: configure new message, log this message into event
-                        # TODO: check if message is text message
 
                         if self.config.collect_stickers and message.get_type() == ReceivedMessage.STICKER:
                             self.messages.add_new_message(message)
 
                         if self.config.collect_messages:
-                            self.messages.add_new_message(message)
+                            self.messages.add_new_message(message, save_attachments=True)
 
                         if self.config.collect_voices and message.get_type() == ReceivedMessage.VOICE_MESSAGE:
-                            pass  # TODO: end this
+                            self.messages.add_new_message(message, save_attachments=True)
+                        
+                        # TODO: collect only docs
 
                         if self.config.send_spam:
                             if peer_id in self.config.current_received:
