@@ -6,8 +6,9 @@
         ],
         "files": [
             "example.txt"
-        ],
-        "sticker_id": 0,
-        "voice-message": ""
+        ]
+    },
+    {
+        "voice-message": "empty0.ogg"
     }
 ]
