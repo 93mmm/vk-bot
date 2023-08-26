@@ -10,7 +10,7 @@ def append_line(path: str, line: str):
 
 def write_lines(path: str, lines: list, delimiter: str):
     with open(path, "w") as file:
-        file.write(delimiter.join(collected_data_list))
+        file.write(delimiter.join(lines))
 
 
 def free_file(path: str):

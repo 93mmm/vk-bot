@@ -1,14 +1,14 @@
 import argparse
 from sys import exit
 
+from const import CONFIG_JSON
 from helpers import read_json
 
-CONFIG = "files/json/config.json"
 
 
 class LaunchConfig:
     def __init__(self):
-        json_data = read_json(CONFIG)
+        json_data = read_json(CONFIG_JSON)
 
         self.token: str = None
         self.delay: dict = None
@@ -74,17 +74,17 @@ class LaunchConfig:
         vk_bot_tools.add_argument("-collect-stickers",
                                   action="store_true",
                                   help="receive and record incoming stickers (you can configure a list of group IDs "
-                                       f"(in the {CONFIG} file) from which messages need to be recorded")
+                                       f"(in the {CONFIG_JSON} file) from which messages need to be recorded")
 
         vk_bot_tools.add_argument("-collect-voices",
                                   action="store_true",
                                   help="receive and record incoming voices (you can configure a list of group IDs "
-                                       f"(in the {CONFIG} file) from which messages need to be recorded")
+                                       f"(in the {CONFIG_JSON} file) from which messages need to be recorded")
 
         vk_bot_tools.add_argument("-collect-messages",
                                   action="store_true",
                                   help="receive and record incoming messages (you can configure a list of group IDs "
-                                       f"(in the {CONFIG} file) from which messages need to be recorded)")
+                                       f"(in the {CONFIG_JSON} file) from which messages need to be recorded)")
 
         vk_bot_tools.add_argument("-load-only-docs",
                                   action="store_true",

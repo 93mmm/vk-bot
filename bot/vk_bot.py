@@ -2,6 +2,7 @@ from structs import *
 
 import tests
 from helpers import write_json
+from const import *
 
 from vk_api import VkApi
 from vk_api.vk_api import VkApiMethod
@@ -13,22 +14,17 @@ from sys import exit
 from requests import ConnectionError
 
 
-EXCEPTIONS = "files/logs/errors.txt"
-RECEIVED_MESSAGES = "files/logs/received_messages.txt"
-SENT_MESSAGES = "files/logs/sent_messages.txt"
-
-
 def log_exception(strct: Ex):
-    with open(EXCEPTIONS, "a") as file:
+    with open(EXCEPTIONS_FILE, "a") as file:
         file.write(str(strct))
     print(repr(strct.ex))
 
 def log_received(strct: ReceivedMessage):
-    with open(RECEIVED_MESSAGES, "a") as file:
+    with open(RECEIVED_MESSAGES_FILE, "a") as file:
         file.write(str(strct))
 
 def log_sent(strct: SentMessage):
-    with open(SENT_MESSAGES, "a") as file:
+    with open(SENT_MESSAGES_FILE, "a") as file:
         file.write(str(strct))
 
 
@@ -99,8 +95,6 @@ class Bot:
         def log_percents(percentage: int, message: str):
             print("\r" + " " * 50, f"\r{percentage}%, {message}", end="")
         
-        configured_list_of_ids_path = "files/ids/configured_list_of_ids.txt"
-        json_file = "files/json/conversations.json"
         collected_data_dict = dict()
         collected_data_list = list()
 
@@ -140,11 +134,11 @@ class Bot:
             log_percents(60, "creating a list with conversations")
             sleep(1)
         
-        with open(configured_list_of_ids_path, "w") as file:
+        with open(CONVERSATIONS_TXT, "w") as file:
             log_percents(90, "creating a file with conversations")
             file.write("\n".join(collected_data_list))
         
-        write_json(json_file, collected_data_dict)
+        write_json(CONVERSATIONS_JSON, collected_data_dict)
 
-        log_percents(100, f"Created file: {configured_list_of_ids_path}")
+        log_percents(100, f"Created file: {CONVERSATIONS_TXT}")
         exit()

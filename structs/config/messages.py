@@ -4,19 +4,14 @@ from vk_api import VkApi
 from message import *
 from structs.events.received_message import ReceivedMessage
 from helpers import read_json, write_json
-
-MESSAGES = "files/json/messages.json"
-
-PHOTOS_PATH = "files/assets/photos/"
-VOICE_PATH = "files/assets/voice/"
-DOCS_PATH = "files/assets/files/"
+from const import *
 
 
 class JsonMessagesHolder:
     def __init__(self):
         self.messages: list = None
 
-        self.messages = read_json(MESSAGES)
+        self.messages = read_json(MESSAGES_JSON)
 
     def generate_random_message(self, vk: VkApi, peer_id: int):
         # TODO: rewrite with checks
@@ -63,4 +58,4 @@ class JsonMessagesHolder:
         if new_message != dict() and not new_message in self.messages:
             self.messages.append(new_message)
 
-            write_json(MESSAGES, self.messages)
+            write_json(MESSAGES_JSON, self.messages)
