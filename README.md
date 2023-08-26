@@ -2,8 +2,8 @@
 
 - [x] Sends spam to selected conferences through a certain interval in messages
 - [x] Collects stickers sent in selected conversations
-- [ ] Collects voice messages sent in selected conversations
-- [ ] Collects messages sent in selected conversations
+- [x] Collects voice messages sent in selected conversations
+- [x] Collects messages sent in selected conversations
 - [x] Composes a special file that contains the ID and names of all chats of the account (ignores chats with communities)
 - [ ] Deletes all subscriptions from the account
 - [ ] Removes all friends from the account (leaves them in subscribers)
