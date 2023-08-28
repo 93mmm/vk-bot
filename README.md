@@ -3,8 +3,10 @@
 - [x] Sends spam to selected conferences through a certain interval in messages
 - [x] Collects stickers sent in selected conversations
 - [x] Collects voice messages sent in selected conversations
-- [x] Collects messages sent in selected conversations
+- [x] Collects messages sent in selected conversations (include attachments)
+- [x] Saves only docs from messages
 - [x] Composes a special file that contains the ID and names of all chats of the account (ignores chats with communities)
+- [x] Update the status on the page every N seconds
 - [ ] Deletes all subscriptions from the account
 - [ ] Removes all friends from the account (leaves them in subscribers)
 - [ ] Removes all added videos from the account
@@ -38,7 +40,8 @@ python3 main.py -h
 | `-collect-voices`       | receive and record incoming voices (you can configure a list of group IDs (in the `files/json/config.json` file) from which messages need to be recorded    |
 | `-collect-messages`     | receive and record incoming messages (you can configure a list of group IDs (in the `files/json/config.json` file) from which messages need to be recorded) |
 | `-load-only-docs`       | load all received docs into memory (does not collect messages in a `files/json/messages.json`)                                                              |
-| `-receive-only-ids`     | listen to the console output to get the IDs and names of conversations (you can improve application's logging speed by creating one)                        |
+| `-change-statuses`      | change the status of the page once in a certain period                                                                                                      |
+| `-configure-ids`        | listen to the console output to get the IDs and names of conversations (you can improve application's logging speed by creating one)                        |
 | `-remove-subscriptions` | remove all subscriptions from your account                                                                                                                  |
 | `-remove-friends`       | remove all friends from your account                                                                                                                        |
 | `-remove-videos`        | remove all added videos from your account                                                                                                                   |
