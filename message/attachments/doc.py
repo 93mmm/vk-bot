@@ -1,6 +1,7 @@
 from helpers import download_and_save
 from vk_api import VkUpload, VkApi
 from const import DOCS_PATH
+from structs import ConversationCaches
 
 
 class Doc:

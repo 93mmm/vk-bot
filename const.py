@@ -4,7 +4,8 @@ SENT_MESSAGES_FILE = "files/logs/sent_messages.txt"
 
 CONVERSATIONS_TXT = "files/ids/configured_list_of_ids.txt"
 
-CONVERSATIONS_JSON = "files/json/conversations.json"
+CONVERSATION_CACHES = "files/cache/c_cache.json"
+LINK_CACHES = "files/cache/l_cache.json"
 CONFIG_JSON = "files/json/config.json"
 MESSAGES_JSON = "files/json/messages.json"
 
@@ -15,3 +16,4 @@ DOCS_PATH = "files/assets/files/"
 STICKER = 1
 VOICE_MESSAGE = 2
 TEXT_MESSAGE = 3
+NOT_FOUND = "NF"

@@ -14,6 +14,7 @@ from requests import ConnectionError
 from threading import Thread
 
 
+# TODO: move this shit
 def log_exception(strct: Ex):
     with open(EXCEPTIONS_FILE, "a") as file:
         file.write(str(strct))
@@ -66,7 +67,6 @@ class Bot:
                         message = ReceivedMessage(self.vk, event)
                         if self.config.log_messages:
                             log_received(message)
-                        print(message)
 
                         if self.config.to_collect_sticker(peer_id, message.get_type()):
                             self.messages.add_new_message(message)
@@ -81,7 +81,6 @@ class Bot:
 
                         if self.config.send_spam:
                             if peer_id in self.config.current_received:
-                                print(self.config.current_received)
                                 if self.config.current_received[peer_id] == self.config.spam_delay[peer_id]:
                                     self.config.current_received[peer_id] = 0
                                     self.messages.generate_random_message(self.vk, peer_id).send(self.api)
@@ -148,7 +147,7 @@ class Bot:
             log_percents(90, "Creating a file with conversations")
             file.write("\n".join(collected_data_list))
         
-        write_json(CONVERSATIONS_JSON, collected_data_dict)
+        write_json(CONVERSATION_CACHES, collected_data_dict)
 
         log_percents(100, f"Created file: {CONVERSATIONS_TXT}")
         exit_from_script()

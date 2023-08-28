@@ -1,4 +1,4 @@
-from .config.db import *
+from .config.caches import *
 from .config.launch import *
 from .config.messages import *
 
