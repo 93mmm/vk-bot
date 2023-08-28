@@ -1,9 +1,14 @@
 from os import path
-from sys import exit
 
 from const import *
 from structs import JsonMessagesHolder
-from helpers import read_json, write_lines
+from helpers import read_json, write_lines, exit_from_script
+
+
+def check_and_warn_about_errors_in_json_files():
+    # TODO: -change-statuses warn (haven't selected satatuses)
+    # TODO: rebase tests into helpers
+    pass
 
 
 def renew_logs_files():
@@ -34,7 +39,7 @@ def check_files():
                 to_exit = True
 
     if to_exit:
-        exit()
+        exit_from_script()
 
 
 def test():

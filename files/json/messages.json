@@ -9,6 +9,8 @@
         ]
     },
     {
-        "voice-message": "empty0.ogg"
+        "files": [
+            "README.md"
+        ]
     }
 ]

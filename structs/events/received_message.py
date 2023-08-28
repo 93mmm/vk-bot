@@ -5,13 +5,10 @@ from vk_api.vk_api import VkApiMethod
 from helpers import get_photo_url
 from structs import JsonDialogsDB
 from message import Voice, Doc, Photo
+from const import STICKER, VOICE_MESSAGE, TEXT_MESSAGE
 
 
 class ReceivedMessage:
-    STICKER = 1
-    VOICE_MESSAGE = 2
-    TEXT_MESSAGE = 3
-
     def __init__(self, vk: VkApi, event: Event):
         self.api: VkApiMethod = vk.get_api()
 
@@ -87,10 +84,10 @@ class ReceivedMessage:
 
     def get_type(self):
         if self.sticker_id != 0:
-            return self.STICKER
+            return STICKER
         if len(self.attachments) > 0 and type(self.attachments[0]) == Voice:
-            return self.VOICE_MESSAGE
-        return self.TEXT_MESSAGE
+            return VOICE_MESSAGE
+        return TEXT_MESSAGE
     
     def download_attachments(self):
         for el in self.attachments:

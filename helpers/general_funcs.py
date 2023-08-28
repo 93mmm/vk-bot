@@ -1,4 +1,7 @@
 from requests import get
+from sys import exit
+from .warnings import colored_text
+
 
 def get_photo_url(sizes: list[dict]) -> str:
     # I've read the documentation, so it's better to search this way
@@ -12,3 +15,8 @@ def get_photo_url(sizes: list[dict]) -> str:
 def download_and_save(path: str, url: str):
     with open(path, "wb") as file:
         file.write(get(url).content)
+
+
+def exit_from_script(message="Exiting..."):
+    print("\r" + " " * 50 + "\r" + colored_text(message))
+    exit()

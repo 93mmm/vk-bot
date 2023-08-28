@@ -9,4 +9,5 @@ def main():
 if __name__ == "__main__":
     main()
 # TODO: add music downloading
-# TODO: colorama
+# TODO: improve photo downloading by creating database with |filename|: |type{sender_id}_{id}|
+# TODO: make realization of -load-only-docs
