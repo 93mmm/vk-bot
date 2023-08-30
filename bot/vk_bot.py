@@ -9,6 +9,7 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 
 from requests import ConnectionError
 from threading import Thread
+from time import sleep
 
 
 class Bot:
@@ -75,7 +76,7 @@ class Bot:
             except ConnectionError:
                 sleep(2)
             except Exception as ex:
-                log_exception(repr(Ex(ex)))
+                log_exception(str(Ex()))
                 sleep(2)
     
     def change_status(self):

@@ -1,10 +1,10 @@
-# Нow do I fill in ```config.json```?
+# Нow do I fill in `config.json`?
 
 > [!IMPORTANT]
 > Paste your token
 
 - Get [access token](https://vkhost.github.io) of your account
-- Paste it instead of ```your-token``` in ```token``` field in ```config.json```
+- Paste it instead of `your-token` in `token` field in `config.json`
 <br>
 
 > [!IMPORTANT]
@@ -16,7 +16,7 @@ python3 main.py -receive-only-ids
 ```
 and check console messages (you will receive a text file)
 
-Fill in ```config.json``` according to where you want to receive and save certain messages from:
+Fill in `config.json` according to where you want to receive and save certain messages from:
 ```json
     "collect-stickers-from": [
         2000000024,
@@ -38,7 +38,7 @@ Fill in ```config.json``` according to where you want to receive and save certai
 > [!IMPORTANT]
 > If you want to send spam to conferences
 
-Fill in the ```send-spam-to``` field in the form of ”key: value", where the key is the conversation ID, the value is the number of messages between the bot messages:
+Fill in the `send-spam-to` field in the form of ”key: value", where the key is the conversation ID, the value is the number of messages between the bot messages:
 ```json
     "send-spam-to": {
         "2000000024": "20",
@@ -46,7 +46,16 @@ Fill in the ```send-spam-to``` field in the form of ”key: value", where the ke
     },
 ```
 
-Example of file ```config.json```:
+Fill in the `status`: `period` (in seconnds) - the status changes every N minutes; `statuses` (list) - what statuses will be displayed on your page:
+```json
+    "period": 10,
+        "statuses": [
+            "first staus",
+            "second sstatus"
+        ]
+```
+
+Example of file `config.json`:
 ```json
 {
     "token": "your-token",
@@ -68,6 +77,13 @@ Example of file ```config.json```:
         2000000110,
         1,
         2
-    ]
+    ],
+    "status": {
+        "period": 10,
+        "statuses": [
+            "first staus",
+            "second sstatus"
+        ]
+    }
 }
 ```

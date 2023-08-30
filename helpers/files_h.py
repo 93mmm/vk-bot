@@ -21,7 +21,8 @@ def free_file(path: str):
 
 def log_exception(line: str):
     append_line(EXCEPTIONS_FILE, line)
-    warn("Exception occurred!")
+    warn("Exception occurred:")
+    print(line)
 
 
 def log_received(line: str):
