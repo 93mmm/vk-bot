@@ -45,7 +45,7 @@ class Doc(Attachment):
     def __init__(self):
         super().__init__()
 
-    def send(self) -> str:
+    def get_link(self) -> str:
         cache = LinkCaches()
         link = cache.get_link(self.path)
         if link == NOT_FOUND:
@@ -59,7 +59,7 @@ class Photo(Attachment):
     def __init__(self):
         super().__init__()
     
-    def send(self) -> str:
+    def get_link(self) -> str:
         cache = LinkCaches()
         link = cache.get_link(self.path)
         if link == NOT_FOUND:
@@ -73,7 +73,7 @@ class Voice(Attachment):
     def __init__(self):
         super().__init__()
     
-    def send(self) -> str:
+    def get_link(self) -> str:
         cache = LinkCaches()
         link = cache.get_link(self.path)
         if link == NOT_FOUND:
@@ -97,8 +97,7 @@ class TextMessage:
     
     def send(self, api):
         for index, element in enumerate(self.attachments):
-            self.attachments[index] = self.attachments[index].send()
-
+            self.attachments[index] = self.attachments[index].get_link()
         api.messages.send(peer_id=self.peer_id, 
                           random_id=randint(0, 100000),
                           message=self.text, 

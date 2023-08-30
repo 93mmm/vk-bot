@@ -67,7 +67,8 @@ class Bot:
                             message.download_attachments()
                         
                         if self.config.to_spam_into(peer_id):
-                            self.messages.generate_random_message(self.vk, peer_id).send(self.api)
+                            th = Thread(target=self.messages.generate_random_message(self.vk, peer_id).send, args=[self.api])
+                            th.start()
 
             except KeyboardInterrupt:
                 exit_from_script()
