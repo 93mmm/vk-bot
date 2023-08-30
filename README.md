@@ -1,5 +1,8 @@
 # VK pseudo spam bot
 
+> [!NOTE]
+> Futures:
+
 - [x] Sends spam to selected conferences through a certain interval in messages
 - [x] Collects stickers sent in selected conversations
 - [x] Collects voice messages sent in selected conversations
@@ -21,9 +24,9 @@ pip3 install -r requirements.txt
 > [!IMPORTANT]
 > Configure environment
 
-1. Configure [```config.json```](https://github.com/93mmm/vk-pseudo-spam-bot/tree/master/files/json) file to start script
+1. Configure [`config.json`](https://github.com/93mmm/vk-pseudo-spam-bot/tree/master/files/json) file to start script
 
-2. Type ```python3 main.py {flags}``` to run script
+2. Type `python3 main.py {flags}` to run script
 
 ## Flags
 
