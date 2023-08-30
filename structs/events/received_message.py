@@ -3,19 +3,16 @@ from vk_api.longpoll import Event
 from vk_api.vk_api import VkApiMethod
 
 from helpers import get_photo_url
-from structs import JsonDialogsDB
+from structs import ConversationCaches
 from message import Voice, Doc, Photo
+from const import STICKER, VOICE_MESSAGE, TEXT_MESSAGE, NOT_FOUND
 
 
 class ReceivedMessage:
-    STICKER = 1
-    VOICE_MESSAGE = 2
-    TEXT_MESSAGE = 3
-
     def __init__(self, vk: VkApi, event: Event):
         self.api: VkApiMethod = vk.get_api()
 
-        self.db_holder: JsonDialogsDB = JsonDialogsDB()
+        self.cache: ConversationCaches = ConversationCaches()
 
         self.conversation_id: int = None
         self.conversation_name: str = None
@@ -36,9 +33,20 @@ class ReceivedMessage:
         self.message_text = event.message
         self.time = event.datetime
 
+    def get_type(self):
+        if self.sticker_id != 0:
+            return STICKER
+        if len(self.attachments) > 0 and type(self.attachments[0]) == Voice:
+            return VOICE_MESSAGE
+        return TEXT_MESSAGE
+    
+    def download_attachments(self):
+        for el in self.attachments:
+            el.download()
+
     def _get_sender_name(self, event: Event) -> str:
-        name = self.db_holder.get_name(event.peer_id)
-        if name == self.db_holder.NOT_FOUND:
+        name = self.cache.get_name(event.peer_id)
+        if name == NOT_FOUND:
             if event.from_user:
                 usr = self.api.users.get(user_ids=str(self.conversation_id))[0]
                 return f"{usr['first_name']} {usr['last_name']}"
@@ -84,17 +92,6 @@ class ReceivedMessage:
         if "attach1_type" in attachments and attachments["attach1_type"] == "sticker":
             return attachments["attach1"]
         return 0
-
-    def get_type(self):
-        if self.sticker_id != 0:
-            return self.STICKER
-        if len(self.attachments) > 0 and type(self.attachments[0]) == Voice:
-            return self.VOICE_MESSAGE
-        return self.TEXT_MESSAGE
-    
-    def download_attachments(self):
-        for el in self.attachments:
-            el.download()
 
     def __str__(self):
         output = list()

@@ -1,5 +1,9 @@
-from .attachments.doc import Doc
-from .attachments.photo import Photo
-from .attachments.voice_message import Voice
+from .message import *
 
-from .message.message import TextMessage
+
+__call__ = [
+    "Doc",
+    "Photo",
+    "Voice",
+    "TextMessage"
+]
