@@ -1,14 +1,14 @@
 {
     "token": "your-token",
-    "send-spam-to": {"id-1": 1, "id-2": 2},
-    "collect-stickers-from": [2000000131],
+    "send-spam-to": {},
+    "collect-stickers-from": [],
     "collect-voices-from": [],
     "collect-messages-from": [],
     "status": {
         "period": 10,
         "statuses": [
-            "first staus",
-            "second sstatus"
+            "first status",
+            "second status"
         ]
     }
 }

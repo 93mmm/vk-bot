@@ -1,4 +1,4 @@
-from const import CONVERSATION_CACHES, NOT_FOUND
+from const import CONVERSATION_CACHES, NOT_FOUND, LINK_CACHES
 from helpers import read_json, write_json
 
 
@@ -6,17 +6,16 @@ class LinkCaches:
     def __init__(self):
         self._sent_docs: dict = None
 
-        self._sent_docs = read_json(CONVERSATION_CACHES)
+        self._sent_docs = read_json(LINK_CACHES)
 
     def get_link(self, path: str) -> str:
         if path in self._sent_docs:
-            print("got the link")
-            return self._sent_docs[peer_id]
+            return self._sent_docs[path]
         return NOT_FOUND
     
     def add_link(self, key: str, value: str):
         self._sent_docs[key] = value
-        write_json(self._sent_docs)
+        write_json(LINK_CACHES, self._sent_docs)
 
 
 class ConversationCaches:

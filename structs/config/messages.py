@@ -25,17 +25,17 @@ class JsonMessagesHolder:
         if "photos" in selected:
             for filename in selected["photos"]:
                 photo = Photo()
-                photo.prepare_to_send(vk, PHOTOS_PATH + filename)
+                photo.prepare_to_send(vk, filename)
                 attachments.append(photo)
         if "files" in selected:
             for filename in selected["files"]:
                 doc = Doc()
-                doc.prepare_to_send(vk, DOCS_PATH + filename)
+                doc.prepare_to_send(vk, filename)
                 attachments.append(doc)
         if "voice-message" in selected:
             for filename in selected["voice-message"]:
                 vm = Voice()
-                vm.prepare_to_send(vk, VOICE_PATH + filename)
+                vm.prepare_to_send(vk, filename)
                 attachments.append(vm)
 
         return TextMessage(peer_id, attachments, text, sticker_id)

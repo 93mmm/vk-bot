@@ -33,6 +33,17 @@ class ReceivedMessage:
         self.message_text = event.message
         self.time = event.datetime
 
+    def get_type(self):
+        if self.sticker_id != 0:
+            return STICKER
+        if len(self.attachments) > 0 and type(self.attachments[0]) == Voice:
+            return VOICE_MESSAGE
+        return TEXT_MESSAGE
+    
+    def download_attachments(self):
+        for el in self.attachments:
+            el.download()
+
     def _get_sender_name(self, event: Event) -> str:
         name = self.cache.get_name(event.peer_id)
         if name == NOT_FOUND:
@@ -81,17 +92,6 @@ class ReceivedMessage:
         if "attach1_type" in attachments and attachments["attach1_type"] == "sticker":
             return attachments["attach1"]
         return 0
-
-    def get_type(self):
-        if self.sticker_id != 0:
-            return STICKER
-        if len(self.attachments) > 0 and type(self.attachments[0]) == Voice:
-            return VOICE_MESSAGE
-        return TEXT_MESSAGE
-    
-    def download_attachments(self):
-        for el in self.attachments:
-            el.download()
 
     def __str__(self):
         output = list()
