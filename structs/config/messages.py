@@ -33,10 +33,9 @@ class JsonMessagesHolder:
                 doc.prepare_to_send(vk, filename)
                 attachments.append(doc)
         if "voice-message" in selected:
-            for filename in selected["voice-message"]:
-                vm = Voice()
-                vm.prepare_to_send(vk, filename)
-                attachments.append(vm)
+            vm = Voice()
+            vm.prepare_to_send(vk, selected["voice-message"])
+            attachments.append(vm)
 
         return TextMessage(peer_id, attachments, text, sticker_id)
 
