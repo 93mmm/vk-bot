@@ -46,21 +46,20 @@ class LaunchConfig:
 
         self._check_config()
     
-    def to_collect_sticker(self, peer_id: int, type: int) -> bool:
+    def to_collect_sticker(self, peer_id: int, tp: int) -> bool:
         return (self._collect_stickers and
-                type is STICKER and
+                tp is STICKER and
                 (peer_id in self._collect_stickers_from or len(self._collect_stickers_from) == 0)
                 )
 
-    def to_collect_message(self, peer_id: int, type: int) -> bool:
+    def to_collect_message(self, peer_id: int, tp: int) -> bool:
         return (self._collect_messages and
-                type is TEXT_MESSAGE and
                 (peer_id in self._collect_messages_from or len(self._collect_messages_from) == 0)
                 )
     
-    def to_collect_voices(self, peer_id: int, type: int) -> bool:
+    def to_collect_voices(self, peer_id: int, tp: int) -> bool:
         return (self._collect_voices and
-                type is VOICE_MESSAGE and
+                tp is VOICE_MESSAGE and
                 (peer_id in self._collect_voices_from or len(self._collect_voices_from) == 0)
                 )
     
@@ -69,6 +68,7 @@ class LaunchConfig:
             self._current_received[peer_id] = 0
             return True
         if peer_id in self._current_received:
+            print(self._current_received)
             self._current_received[peer_id] += 1
         return False
     
